@@ -1,0 +1,7 @@
+body {
+  font-family: "Inter", sans-serif;
+}
+.task-checkbox:checked + span {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
