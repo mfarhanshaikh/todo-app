@@ -85,22 +85,10 @@
         </div>
       </div>
       <div class="flex items-center justify-between mb-6 px-2">
-        <div class="flex gap-4">
-          <button
-            class="text-primary font-semibold text-sm border-b-2 border-primary pb-1"
-          >
-            All Tasks
-          </button>
-          <button
-            class="text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1"
-          >
-            Active
-          </button>
-          <button
-            class="text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1"
-          >
-            Completed
-          </button>
+        <div class="flex gap-4" id="filter-buttons">
+          <button data-filter="all" class="filter-btn text-primary font-semibold text-sm border-b-2 border-primary pb-1">All Tasks</button>
+          <button data-filter="active" class="filter-btn text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1">Active</button>
+          <button data-filter="completed" class="filter-btn text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1">Completed</button>
         </div>
         <div class="flex items-center gap-3">
           <span
@@ -108,7 +96,7 @@
             >3 tasks remaining</span
           >
           <button
-            class="flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors text-sm"
+            class="hide-completed-task flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors text-sm"
           >
             <span class="material-icons text-base">visibility_off</span>
             Hide Completed

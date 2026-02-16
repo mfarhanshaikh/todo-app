@@ -1,105 +1,152 @@
 const taskInput = document.getElementById("input-task");
 const taskBtn = document.getElementById("task-btn");
 const taskList = document.getElementById("task-list");
+const filterBtns = document.querySelectorAll(".filter-btn");
 
-let tasks = [];
-let editingTask = null;
+let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
+let editingTaskIndex = null;
+let currentFilter = "all";
+
+filterBtns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    filterBtns.forEach((b) => {
+      b.classList.remove(
+        "text-primary",
+        "font-semibold",
+        "border-b-2",
+        "border-primary",
+      );
+      b.classList.add("text-slate-500");
+    });
+    e.target.classList.add(
+      "text-primary",
+      "font-semibold",
+      "border-b-2",
+      "border-primary",
+    );
+    e.target.classList.remove("text-slate-500");
+
+    currentFilter = e.target.getAttribute("data-filter");
+    renderTasks();
+  });
+});
 
 taskBtn.addEventListener("click", () => {
-  let newTask = taskInput.value.trim();
-  if (!newTask) {
-    alert("Please enter a task");
-    return;
-  }
+  let taskText = taskInput.value.trim();
+  if (!taskText) return alert("Please enter a task");
 
-  if (editingTask !== null) {
-    tasks[editingTask] = newTask;
-    editingTask = null;
-    taskBtn.textContent = "Add Task";
+  if (editingTaskIndex !== null) {
+    tasks[editingTaskIndex].text = taskText;
+    editingTaskIndex = null;
+    taskBtn.innerHTML = `<span class="material-icons text-sm">add</span> Add Task`;
   } else {
-    tasks.push(newTask);
+    tasks.push({
+      id: Date.now(),
+      text: taskText,
+      completed: false,
+    });
   }
 
-  renderTasks();
+  saveAndRender();
   taskInput.value = "";
 });
 
 function renderTasks() {
   taskList.innerHTML = "";
-  tasks.forEach((task, index) => {
+
+  const filteredTasks = tasks.filter((task) => {
+    if (currentFilter === "active") return !task.completed;
+    if (currentFilter === "completed") return task.completed;
+    return true;
+  });
+
+  filteredTasks.forEach((task) => {
+    const actualIndex = tasks.findIndex((t) => t.id === task.id);
+
     const taskItem = document.createElement("div");
+    taskItem.className =
+      "task-item transition-all animate-in fade-in duration-300";
+
     taskItem.innerHTML = `
-        <div
-          class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex items-center justify-between"
-        >
+        <div class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all flex items-center justify-between mb-3">
           <div class="flex items-center gap-4 flex-grow">
             <label class="relative flex items-center cursor-pointer">
-              <input
-                class="task-checkbox h-5 w-5 rounded border-slate-300 dark:border-slate-700 text-primary focus:ring-primary transition-all"
-                type="checkbox"
-              />
+              <input class="task-checkbox h-5 w-5 rounded border-slate-300 text-primary focus:ring-primary" 
+                     type="checkbox" ${task.completed ? "checked" : ""} />
             </label>
-            <span class="text-slate-700 dark:text-slate-200 font-medium"
-              >${task}</span
-            >
+            <span class="task-text text-slate-700 dark:text-slate-200 font-medium ${task.completed ? "line-through opacity-50" : ""}"></span>
           </div>
-          <div
-            class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <button
-              class="edit-btn p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-              title="Edit"
-            >
-              <span class="material-icons text-xl">edit_note</span>
-            </button>
-            <button
-              class="delete-btn p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-              title="Delete"
-              
-            >
-              <span class="material-icons text-xl">delete_outline</span>
-            </button>
+          <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button class="edit-btn p-2 text-slate-400 hover:text-primary rounded-lg transition-colors"><span class="material-icons text-xl">edit_note</span></button>
+            <button class="delete-btn p-2 text-slate-400 hover:text-red-500 rounded-lg transition-colors"><span class="material-icons text-xl">delete_outline</span></button>
           </div>
-        </div>
-       `;
+        </div>`;
 
+    taskItem.querySelector(".task-text").textContent = task.text;
     taskList.appendChild(taskItem);
 
     const deleteBtn = taskItem.querySelector(".delete-btn");
     const editBtn = taskItem.querySelector(".edit-btn");
     const checkbox = taskItem.querySelector(".task-checkbox");
-    const taskText = taskItem.querySelector("span");
 
     deleteBtn.addEventListener("click", () => {
-      tasks = tasks.filter((task, i) => i !== index);
-      renderTasks();
+      tasks.splice(actualIndex, 1);
+      saveAndRender();
     });
 
     editBtn.addEventListener("click", () => {
-      editingTask = index;
-      taskInput.value = tasks[index];
+      editingTaskIndex = actualIndex;
+      taskInput.value = tasks[actualIndex].text;
       taskBtn.textContent = "Update";
+      taskInput.focus();
     });
 
     checkbox.addEventListener("change", () => {
-      
+      tasks[actualIndex].completed = checkbox.checked;
       if (checkbox.checked) {
-        taskText.style.textDecoration = "line-through";
-        taskText.style.opacity = "0.5";
-        editBtn.disabled = true;
-        deleteBtn.disabled = true;
-      } else {
-        taskText.style.textDecoration = "none";
-        taskText.style.opacity = "1";
-        editBtn.disabled = false;
-        deleteBtn.disabled = false;
+        showToast("Task marked as completed! 🎉");
       }
+      saveAndRender();
     });
   });
+
+  updateCount();
 }
 
-taskInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    taskBtn.click();
-  }
+function saveAndRender() {
+  localStorage.setItem("myTasks", JSON.stringify(tasks));
+  renderTasks();
+}
+
+function updateCount() {
+  const remaining = tasks.filter((t) => !t.completed).length;
+  const countSpan = document.querySelector(".tracking-wider");
+  if (countSpan) countSpan.textContent = `${remaining} tasks remaining`;
+}
+
+taskInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") taskBtn.click();
 });
+
+renderTasks();
+
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerHTML = `
+        <span class="material-icons text-sm">check_circle</span>
+        <span>${message}</span>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 100);
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+
+    setTimeout(() => {
+      toast.remove();
+    }, 500);
+  }, 3000);
+}
