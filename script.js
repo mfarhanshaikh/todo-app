@@ -2,10 +2,14 @@ const taskInput = document.getElementById("input-task");
 const taskBtn = document.getElementById("task-btn");
 const taskList = document.getElementById("task-list");
 const filterBtns = document.querySelectorAll(".filter-btn");
+const hideCompletedBtn = document.querySelector(".hide-completed-task");
 
 let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
 let editingTaskIndex = null;
 let currentFilter = "all";
+let isHidden = false;
+
+
 
 filterBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
@@ -39,6 +43,7 @@ taskBtn.addEventListener("click", () => {
     tasks[editingTaskIndex].text = taskText;
     editingTaskIndex = null;
     taskBtn.innerHTML = `<span class="material-icons text-sm">add</span> Add Task`;
+    showToast("Task updated successfully!", "info");
   } else {
     tasks.push({
       id: Date.now(),
@@ -55,9 +60,15 @@ function renderTasks() {
   taskList.innerHTML = "";
 
   const filteredTasks = tasks.filter((task) => {
-    if (currentFilter === "active") return !task.completed;
-    if (currentFilter === "completed") return task.completed;
-    return true;
+    let matchesFilter = true;
+    if (currentFilter === "active") matchesFilter = !task.completed;
+    if (currentFilter === "completed") matchesFilter = task.completed;
+
+    if (isHidden && task.completed) {
+      return false;
+    }
+
+    return matchesFilter;
   });
 
   filteredTasks.forEach((task) => {
@@ -91,6 +102,7 @@ function renderTasks() {
 
     deleteBtn.addEventListener("click", () => {
       tasks.splice(actualIndex, 1);
+      showToast("Task deleted successfully!", "danger");
       saveAndRender();
     });
 
@@ -104,7 +116,7 @@ function renderTasks() {
     checkbox.addEventListener("change", () => {
       tasks[actualIndex].completed = checkbox.checked;
       if (checkbox.checked) {
-        showToast("Task marked as completed! 🎉");
+        showToast("Task marked as completed! 🎉", "success");
       }
       saveAndRender();
     });
@@ -130,23 +142,51 @@ taskInput.addEventListener("keydown", (e) => {
 
 renderTasks();
 
-function showToast(message) {
+function showToast(message, type = "success") {
   const toast = document.createElement("div");
-  toast.className = "toast";
+  let typeClass = "toast-success";
+  let icon = "check_circle";
+  
+  if (type === "info") {
+      typeClass = "toast-info";
+      icon = "edit";
+  } else if (type === "danger") {
+      typeClass = "toast-danger";
+      icon = "delete";
+  }
+
+  toast.className = `toast ${typeClass}`;
   toast.innerHTML = `
-        <span class="material-icons text-sm">check_circle</span>
+        <span class="material-icons text-sm">${icon}</span>
         <span>${message}</span>
   `;
+  
   document.body.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add("show");
-  }, 100);
-
+  setTimeout(() => { toast.classList.add("show"); }, 100);
   setTimeout(() => {
     toast.classList.remove("show");
-
-    setTimeout(() => {
-      toast.remove();
-    }, 500);
+    setTimeout(() => { toast.remove(); }, 500);
   }, 3000);
 }
+
+hideCompletedBtn.addEventListener("click", () => {
+  isHidden = !isHidden;
+
+  if (isHidden) {
+    hideCompletedBtn.innerHTML = `
+      <span class="material-icons text-base">visibility</span>
+      Show Completed
+    `;
+    hideCompletedBtn.classList.add("text-primary"); 
+    hideCompletedBtn.classList.remove("text-slate-500");
+  } else {
+    hideCompletedBtn.innerHTML = `
+      <span class="material-icons text-base">visibility_off</span>
+      Hide Completed
+    `;
+    hideCompletedBtn.classList.remove("text-primary");
+    hideCompletedBtn.classList.add("text-slate-500");
+  }
+
+  renderTasks();
+});

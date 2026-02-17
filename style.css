@@ -12,10 +12,9 @@ body {
 
 .toast {
     position: fixed;
-    top: -100px; 
+    top: -100px;
     left: 50%;
     transform: translateX(-50%);
-    background: #10b981;
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
@@ -24,10 +23,12 @@ body {
     align-items: center;
     gap: 10px;
     z-index: 1000;
-    transition: top 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); 
+    transition: top 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
     font-weight: 500;
 }
 
-.toast.show {
-    top: 20px; 
-}
+.toast-success { background: #10b981; } 
+.toast-info { background: #137fec; }    
+.toast-danger { background: #ef4444; } 
+
+.toast.show { top: 20px; }

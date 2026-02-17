@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Todo App</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
       rel="stylesheet"
@@ -86,9 +86,24 @@
       </div>
       <div class="flex items-center justify-between mb-6 px-2">
         <div class="flex gap-4" id="filter-buttons">
-          <button data-filter="all" class="filter-btn text-primary font-semibold text-sm border-b-2 border-primary pb-1">All Tasks</button>
-          <button data-filter="active" class="filter-btn text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1">Active</button>
-          <button data-filter="completed" class="filter-btn text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1">Completed</button>
+          <button
+            data-filter="all"
+            class="filter-btn text-primary font-semibold text-sm border-b-2 border-primary pb-1"
+          >
+            All Tasks
+          </button>
+          <button
+            data-filter="active"
+            class="filter-btn text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1"
+          >
+            Active
+          </button>
+          <button
+            data-filter="completed"
+            class="filter-btn text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary transition-colors pb-1"
+          >
+            Completed
+          </button>
         </div>
         <div class="flex items-center gap-3">
           <span
@@ -96,19 +111,14 @@
             >3 tasks remaining</span
           >
           <button
-            class="hide-completed-task flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors text-sm"
+            class="hide-completed-task flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm"
           >
             <span class="material-icons text-base">visibility_off</span>
             Hide Completed
           </button>
         </div>
       </div>
-      <div 
-        class="space-y-3"
-        id="task-list"
-      >
-        
-      </div>
+      <div class="space-y-3" id="task-list"></div>
       <footer class="mt-12 text-center">
         <div
           class="inline-flex items-center gap-2 bg-primary/5 dark:bg-primary/10 px-4 py-2 rounded-full border border-primary/10"
@@ -120,14 +130,16 @@
             Pro-tip: Focus on 3 main tasks every day to boost productivity.
           </p>
         </div>
-        <div
+        <!-- <div
           class="mt-8 pt-8 border-t border-slate-200 dark:border-slate-800 flex justify-center gap-8 text-slate-400 text-xs font-semibold uppercase tracking-widest"
         >
           <a class="hover:text-primary transition-colors" href="#">Privacy</a>
           <a class="hover:text-primary transition-colors" href="#">Terms</a>
           <a class="hover:text-primary transition-colors" href="#">Support</a>
+        </div> -->
+        <div class="mt-8 text-xs text-slate-400 dark:text-slate-500">
+          Made with ❤️ by Mohammad Farhan Shaikh
         </div>
-        <div class="mt-8 text-xs text-slate-400 dark:text-slate-500">Made with ❤️ by Mohammad Farhan Shaikh</div>
       </footer>
     </div>
     <div
@@ -138,6 +150,5 @@
     ></div>
 
     <script src="script.js"></script>
-
   </body>
 </html>
