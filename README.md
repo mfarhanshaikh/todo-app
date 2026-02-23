@@ -22,13 +22,11 @@
 
 | 🖥️ Desktop Interface | 📱 Mobile Experience |
 | :---: | :---: |
-| <img src="screenshots/desktop.png" width="600" alt="Desktop View"> | <img src="screenshots/mobile.png" width="220" alt="Mobile View"> |
+| <img width="1916" height="869" alt="Desktop" src="https://github.com/user-attachments/assets/707cf508-4e64-4dae-a448-ca7af4305dba" /> | <img width="302" height="666" alt="Mobile" src="https://github.com/user-attachments/assets/2da93d0a-6f79-4462-b423-9878818922b7" /> |
+
 
 </div>
 
-> [!IMPORTANT]
-> **Pro Tip for Screenshots:**
-> To get that professional GitHub look, simply **Drag & Drop** your images directly into the `screenshots/` folder in your project, or upload them through the GitHub web interface into this section.
 
 ---
 
